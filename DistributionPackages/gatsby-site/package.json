@@ -1,9 +1,8 @@
 {
-  "name": "gatsby-starter-default",
+  "name": "gatsby-neoscms-demo",
   "private": true,
-  "description": "A simple starter to get up and developing quickly with Gatsby",
-  "version": "0.1.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "description": "A demo gatsby site to be used with Neos CMS",
+  "version": "1.0.0",
   "dependencies": {
     "@emotion/core": "^10.0.21",
     "gatsby": "^2.15.33",
@@ -23,15 +22,12 @@
     "react-helmet": "^5.2.1",
     "react-typography": "^0.16.19",
     "typography": "^0.16.19",
-    "typography-theme-kirkham": "^0.16.19"
+    "typography-theme-kirkham": "^0.16.19",
+      "dotenv": "latest"
   },
   "devDependencies": {
     "prettier": "^1.18.2"
   },
-  "keywords": [
-    "gatsby"
-  ],
-  "license": "MIT",
   "scripts": {
     "build": "gatsby build",
     "develop": "gatsby develop --host 127.0.0.1",
@@ -39,12 +35,5 @@
     "start": "npm run develop",
     "serve": "gatsby serve",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing \""
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
-  },
-  "bugs": {
-    "url": "https://github.com/gatsbyjs/gatsby/issues"
   }
 }

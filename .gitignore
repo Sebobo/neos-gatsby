@@ -19,3 +19,4 @@
 Build/Resources/Java/selenium-server-standalone*
 /"
 /Readme.rst
+/DistributionPackages/gatsby-site/.env.development

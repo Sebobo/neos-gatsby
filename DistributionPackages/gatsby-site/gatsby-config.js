@@ -1,3 +1,9 @@
+require("dotenv").config({
+    path: `.env.${process.env.NODE_ENV}`,
+});
+
+console.info(process.env.API_URL, 'API Url');
+
 module.exports = {
     siteMetadata: {
         title: `Gatsby Default Starter`,
@@ -11,9 +17,9 @@ module.exports = {
             options: {
                 typeName: "NeosCMS",
                 fieldName: "neos",
-                url: "http://neos-gatsby.test/neos/graphql",
+                url: process.env.API_URL,
                 headers: {
-                    Authorization: `Bearer ${env.NEOS_TOKEN}`,
+                    Authorization: `Bearer ${process.env.NEOS_TOKEN}`,
                 },
                 refetchInterval: 60,
             },
