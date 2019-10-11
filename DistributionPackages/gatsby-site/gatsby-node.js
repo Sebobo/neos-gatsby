@@ -1,24 +1,23 @@
 const path = require(`path`);
 
-// exports.onCreateNode = ({node, getNode, actions}) => {
+// exports.onCreateNode = async ({node, getNode, actions}) => {
 //     const {createNodeField} = actions;
-//     console.log(node.internal.type);
-//     if (node.internal.type === `NeosCMS`) {
-//         console.log(node, 'new neos node');
-//         createNodeField({
-//             node,
-//             name: `slug`,
-//             value: node.uriPathSegment,
-//         })
+//
+//     if (node.internal.type === 'SitePage') {
+//         // createNodeField({
+//         //     node,
+//         //     name: `slug`,
+//         //     value: node.properties.uriPathSegment,
+//         // });
+//         console.log(node.context, 'new neos node');
 //     }
 // };
 
-exports.createPages = async ({graphql, actions}) => {
-    const {createPage} = actions;
-    const result = await graphql(`
+const getChildNodeData = async (graphql, createPage, parentNode, pagePath) => {
+    const {data: {neos: {node: {childNodes}}}} = await graphql(`
         query {
             neos {
-                node(path: "/sites/neosdemo") {
+                node(identifier: "${parentNode.identifier}") {
                     label
                     properties
                     identifier
@@ -32,13 +31,48 @@ exports.createPages = async ({graphql, actions}) => {
         }
     `);
 
-    result.data.neos.node.childNodes.forEach((node) => {
-        createPage({
-            path: node.properties.uriPathSegment,
-            component: path.resolve(`./src/templates/page.js`),
-            context: {
-                nodeIdentifier: node.identifier,
-            },
-        })
-    })
+    let childNodeData = [];
+    const childNodeResult = await Promise.all(childNodes.map((childNode) =>
+        return getChildNodeData(
+            graphql, createPage, childNode, pagePath + '/' + childNode.properties.uriPathSegment
+        );
+    ));
+
+    createPage({
+        path: pagePath || parentNode.properties.uriPathSegment,
+        component: path.resolve(`./src/templates/page.js`),
+        context: {
+            documentNodeIdentifier: parentNode.identifier,
+            childNodes: childNodeData,
+        },
+    });
+
+    console.log(childNodeResult);
+
+    return childNodeData;
+};
+
+exports.createPages = async ({graphql, actions}) => {
+    const {createPage} = actions;
+    const {data: {neos: {node}}} = await graphql(`
+        query {
+            neos {
+                node(path: "/sites/neosdemo") {
+                    label
+                    properties
+                    identifier 
+                }
+            }
+        }
+    `);
+
+    let pages = [];
+
+    pages.push(getChildNodeData(graphql, createPage, node, '/'));
+
+    // data.neos.node.childNodes.forEach((documentNode) => {
+    //     pages.push(getChildNodeData(graphql, createPage, documentNode));
+    // });
+
+    return Promise.all(pages);
 };
