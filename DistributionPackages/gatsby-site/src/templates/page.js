@@ -10,11 +10,11 @@ export default (query) => {
     const {properties} = node;
 
     return (
-        <Layout>
+        <Layout documentNode={node}>
             <div>
                 <h1>{properties.title}</h1>
 
-                <h4>{subPages.length} pages</h4>
+                <h4>{subPages.length} subpages</h4>
                 {subPages.length && <Menu nodes={subPages}/>}
 
                 {node.childNodes.map(contentNode => contentNode.nodeType.isOfType ? (
