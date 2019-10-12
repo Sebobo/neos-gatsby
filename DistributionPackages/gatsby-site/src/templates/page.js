@@ -37,23 +37,9 @@ export const query = graphql`
                 identifier
                 properties
                 childNodes(nodeTypeFilter: "Neos.Neos:ContentCollection,Neos.Neos:Content") {
-                    label
-                    identifier
-                    nodeType {
-                        name
-                        isOfType(nodeType: "Neos.Neos:ContentCollection")
-                    }
-                    path
-                    properties
+                    ...NodeFragment
                     childNodes(nodeTypeFilter: "Neos.Neos:ContentCollection,Neos.Neos:Content") {
-                        label
-                        identifier
-                        nodeType {
-                            name
-                            isOfType(nodeType: "Neos.Neos:ContentCollection")
-                        }
-                        path
-                        properties
+                        ...NodeFragment
                     }
                 }
             }
