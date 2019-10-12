@@ -1,26 +1,11 @@
 const path = require(`path`);
-
-// exports.onCreateNode = async ({node, getNode, actions}) => {
-//     const {createNodeField} = actions;
-//
-//     if (node.internal.type === 'SitePage') {
-//         // createNodeField({
-//         //     node,
-//         //     name: `slug`,
-//         //     value: node.properties.uriPathSegment,
-//         // });
-//         console.log(node.context, 'new neos node');
-//     }
-// };
+const pageTemplate = path.resolve(`./src/templates/page.js`);
 
 const getChildNodeData = async (graphql, createPage, parentNode, pagePath) => {
     const {data: {neos: {node: {childNodes}}}} = await graphql(`
         query {
             neos {
                 node(identifier: "${parentNode.identifier}") {
-                    label
-                    properties
-                    identifier
                     childNodes(nodeTypeFilter: "Neos.Neos:Document") {
                         label
                         identifier
@@ -31,25 +16,27 @@ const getChildNodeData = async (graphql, createPage, parentNode, pagePath) => {
         }
     `);
 
-    let childNodeData = [];
-    const childNodeResult = await Promise.all(childNodes.map((childNode) =>
+    const childNodeResult = await Promise.all(childNodes.map((childNode) => {
         return getChildNodeData(
-            graphql, createPage, childNode, pagePath + '/' + childNode.properties.uriPathSegment
+            graphql, createPage, childNode, pagePath + childNode.properties.uriPathSegment + '/'
         );
-    ));
-
-    createPage({
-        path: pagePath || parentNode.properties.uriPathSegment,
-        component: path.resolve(`./src/templates/page.js`),
-        context: {
-            documentNodeIdentifier: parentNode.identifier,
-            childNodes: childNodeData,
-        },
+    })).then((childNodesResult) => {
+        createPage({
+            path: pagePath,
+            component: pageTemplate,
+            context: {
+                documentNodeIdentifier: parentNode.identifier,
+                childNodes: childNodesResult,
+            },
+        });
+        return childNodesResult;
     });
 
-    console.log(childNodeResult);
-
-    return childNodeData;
+    return {
+        ...parentNode,
+        path: pagePath,
+        childNodes: childNodeResult
+    };
 };
 
 exports.createPages = async ({graphql, actions}) => {
@@ -69,10 +56,6 @@ exports.createPages = async ({graphql, actions}) => {
     let pages = [];
 
     pages.push(getChildNodeData(graphql, createPage, node, '/'));
-
-    // data.neos.node.childNodes.forEach((documentNode) => {
-    //     pages.push(getChildNodeData(graphql, createPage, documentNode));
-    // });
 
     return Promise.all(pages);
 };

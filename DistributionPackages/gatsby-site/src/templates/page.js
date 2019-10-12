@@ -6,6 +6,7 @@ import Menu from "../components/menu";
 
 export default (query) => {
     const {data: {neos: {node}}} = query;
+    const subPages = query.pageContext.childNodes;
     const {properties} = node;
 
     return (
@@ -13,8 +14,8 @@ export default (query) => {
             <div>
                 <h1>{properties.title}</h1>
 
-                <h4>{node.childNodes.length} pages</h4>
-                {query.pageContext.childNodes && <Menu nodes={query.pageContext.childNodes}/>}
+                <h4>{subPages.length} pages</h4>
+                {subPages.length && <Menu nodes={subPages}/>}
 
                 {node.childNodes.map(contentNode => contentNode.nodeType.isOfType ? (
                     <ContentCollection key={contentNode.identifier} node={contentNode}/>

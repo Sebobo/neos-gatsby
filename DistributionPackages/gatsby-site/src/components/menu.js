@@ -2,23 +2,26 @@ import {Link} from "gatsby";
 import React from "react";
 
 const ItemList = ({nodes}) => {
-    console.log(nodes, 'itemlist nodes');
     return (
-        <div>
-            {nodes.map((node) => (
-                <div key={node.identifier}>
-                    <Link to={node.properties.uriPathSegment}>
+        <ul>
+            {nodes.map(node => (
+                <li key={node.identifier}>
+                    <Link to={node.path}>
                         <h3>
                             {node.properties.title}
                         </h3>
                     </Link>
                     {node.childNodes && <ItemList nodes={node.childNodes}/>}
-                </div>
+                </li>
             ))}
-        </div>
+        </ul>
     )
 };
 
 export default ({nodes}) => {
-    return <ItemList nodes={nodes}/>
+    return (
+        <nav className="menu">
+            <ItemList nodes={nodes}/>
+        </nav>
+    )
 }
