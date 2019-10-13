@@ -11,6 +11,7 @@ module.exports = {
         author: `@gatsbyjs`,
     },
     plugins: [
+        `gatsby-plugin-sass`,
         `gatsby-plugin-react-helmet`,
         {
             resolve: "gatsby-source-graphql",
@@ -21,7 +22,7 @@ module.exports = {
                 headers: {
                     Authorization: `Bearer ${process.env.NEOS_TOKEN}`,
                 },
-                refetchInterval: 60,
+                // refetchInterval: 60,
             },
         },
         `gatsby-transformer-sharp`,

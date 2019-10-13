@@ -2,20 +2,17 @@ import React from "react"
 import {graphql} from "gatsby"
 import Layout from "../components/layout"
 import ContentCollection from "./content-collection";
-import Menu from "../components/menu";
+
+import "materialize-css/dist/js/materialize.min";
 
 export default (query) => {
-    const {data: {neos: {node}}} = query;
-    const subPages = query.pageContext.childNodes;
+    const {data: {neos: {node}}, pageContext} = query;
     const {properties} = node;
 
     return (
-        <Layout documentNode={node}>
+        <Layout pageContext={pageContext}>
             <div>
                 <h1>{properties.title}</h1>
-
-                <h4>{subPages.length} subpages</h4>
-                {subPages.length && <Menu nodes={subPages}/>}
 
                 {node.childNodes.map(contentNode => contentNode.nodeType.isOfType ? (
                     <ContentCollection key={contentNode.identifier} node={contentNode}/>

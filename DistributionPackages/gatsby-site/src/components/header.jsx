@@ -1,8 +1,8 @@
 import React from "react"
 import {useStaticQuery, graphql} from "gatsby"
-import Menu from "../components/menu";
+import Navigation from "../components/navigation";
 
-export default ({pageTitle}) => {
+export default ({pageContext}) => {
     let {allSitePage: {edges}} = useStaticQuery(graphql`
         query HeaderQuery {
             allSitePage {
@@ -37,10 +37,8 @@ export default ({pageTitle}) => {
         node.properties = node.context.properties;
         node.childNodes = node.children.map(({id}) => {
             let childNode = edges.filter(({node}) => node.id === id)[0];
-            if (childNode) {
-                edges = edges.filter(({node}) => node.id !== id);
-                return orderChildren(childNode);
-            }
+            edges = edges.filter(({node}) => node.id !== id);
+            return orderChildren(childNode);
         });
         return node;
     };
@@ -50,14 +48,7 @@ export default ({pageTitle}) => {
 
     return (
         <header>
-            <div style={{
-                    margin: `0 auto`,
-                    maxWidth: 960,
-                    padding: `1.45rem 1.0875rem`,
-                }}>
-                <h1>{pageTitle}</h1>
-                <Menu nodes={pageTree.childNodes}/>
-            </div>
+            <Navigation pageContext={pageContext} nodes={pageTree.childNodes}/>
         </header>
     )
 }

@@ -1,11 +1,11 @@
 const path = require(`path`);
-const pageTemplate = path.resolve(`./src/templates/page.js`);
+const pageTemplate = path.resolve(`./src/templates/page.jsx`);
 
 exports.onCreateNode = async ({node, getNode, actions}) => {
     const {createParentChildLink} = actions;
 
     if (node.internal.type === 'SitePage') {
-        if (node.context && node.context.childNodes.length) {
+        if (node.context && node.context.childNodes && node.context.childNodes.length) {
             node.context.childNodes.forEach((childNode) => {
                 const childNodeInstance = getNode(node.internal.type + ' ' + childNode.path);
 
